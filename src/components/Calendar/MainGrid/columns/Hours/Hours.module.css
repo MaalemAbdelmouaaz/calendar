@@ -1,0 +1,9 @@
+.grid {
+  height: 100%;
+}
+p {
+  height: 10px;
+  text-align: center;
+  padding-top: 2px;
+  color: #b3adaa;
+}
