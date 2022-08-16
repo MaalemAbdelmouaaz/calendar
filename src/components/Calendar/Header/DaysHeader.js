@@ -4,17 +4,17 @@ import Grid from "@mui/material/Grid";
 import Stack from "@mui/material/Stack";
 
 const DaysHeader = (props) => {
-  let day = props.data;
+  let day = new Date(props.data);
   let data = [
     {
-      d: day.toLocaleString("fr", { day: "numeric" }) - 6,
+      d: day.toLocaleString("fr", { day: "numeric" }),
       m: day.toLocaleString("fr", { month: "long" }),
     },
   ];
   for (let i = 1; i < 7; i++) {
     day.setDate(day.getDate() + 1);
     data.push({
-      d: day.toLocaleString("fr", { day: "numeric" }) - 6,
+      d: day.toLocaleString("fr", { day: "numeric" }),
       m: day.toLocaleString("fr", { month: "long" }),
     });
   }
@@ -29,19 +29,20 @@ const DaysHeader = (props) => {
     { name: "Dimanche", day: data[6].d, month: data[6].m },
   ];
   return (
-    <Grid container columns={7}  className={classes.days}>
+    <Grid container columns={7} className={classes.days}>
       {list.map((cur, index) => (
-        <Stack
-          direction="column"
-          justifyContent="flex-start"
-          alignItems="flex-start"
-          spacing={0}
-          className={classes.head}
-        >
-          <p className={classes.par}>
-            <span>{cur.name + " "}</span> <br /> {cur.day + " " + cur.month} 
-          </p>
-        </Stack>
+        <Grid item xs={1}>
+          <Stack
+            direction="column"
+            justifyContent="flex-start"
+            alignItems="flex-start"
+            className={classes.head}
+          >
+            <p className={classes.par}>
+              <span>{cur.name + " "}</span> <br /> {cur.day + " " + cur.month}
+            </p>
+          </Stack>
+        </Grid>
       ))}
     </Grid>
   );

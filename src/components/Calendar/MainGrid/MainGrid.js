@@ -4,14 +4,14 @@ import Hours from "./columns/Hours/Hours";
 import Days from "./columns/Days/Days";
 import Grid from "@mui/material/Grid";
 
-const MainGrid = () => {
+const MainGrid = (props) => {
   return (
-    <Grid container spacing={0} columns={19} className={classes.mainGrid}>
+    <Grid container spacing={0} columns={18} className={classes.mainGrid}>
       <Grid item xs={1}>
         <Hours />
       </Grid>
-      <Grid item xs={18}>
-        <Days />
+      <Grid item xs={17}>
+        <Days sendData={props.sendData} />
       </Grid>
     </Grid>
   );

@@ -1,5 +1,7 @@
 .cell {
     border-bottom: 3px solid #e3e3e6;
-    width: 200px;
     height: 25px;
+    display: flex;
+    justify-content: center;
+    vertical-align:middle;
 }
