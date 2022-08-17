@@ -22,15 +22,14 @@ const Header = (props) => {
   let today = new Date();
   let ws = startOfWeek(today, { weekStartsOn: 1 });
   let we = endOfWeek(today, { weekStartsOn: 1 });
-  const {events, setEvents} = useContext(EventsContext);
-
-  const [weekStart, setWeekStart] = useState(ws);
+  const { events, setEvents, weekStart, setWeekStart } =
+    useContext(EventsContext);
   const [weekEnd, setWeekEnd] = useState(we);
   const [eventsList, setEventsList] = useState([]);
 
   useEffect(() => {
     setEventsList(getEvents);
-  }, [weekStart]);
+  }, [weekStart, events]);
   props.sendData(eventsList);
   const previousWeek = () => {
     let previousWeekStart = previousMonday(new Date(weekStart));
@@ -63,11 +62,9 @@ const Header = (props) => {
       className={classes.header}
     >
       <h3>
-        <button onClick={previousWeek}>click</button>
-        <ArrowBackIosIcon />
+        <ArrowBackIosIcon className={classes.iconLeft} onClick={previousWeek} />
         {weekTitle(weekStart, weekEnd)}
-        <ArrowForwardIosIcon />
-        <button onClick={nextWeek}>click</button>
+        <ArrowForwardIosIcon className={classes.iconRight} onClick={nextWeek} />
       </h3>
       <DaysHeader data={weekStart} />
     </Stack>
@@ -83,6 +80,6 @@ const weekTitle = (weekStart, weekEnd) => {
   let endYear = weekEnd.getFullYear();
   return `${startDay} ${startMonth} ${
     startYear !== endYear ? startYear : ""
-  } - ${lasttDay} ${lastMonth} ${endYear}`;
+  } - ${lasttDay} ${lastMonth} ${endYear} `;
 };
 export default Header;

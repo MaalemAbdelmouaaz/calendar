@@ -5,6 +5,7 @@ import Card from "./Card";
 import Button from "./Button";
 import { TextField, Box, Slider } from "@mui/material";
 import EventsContext from "../../store/event-context";
+import { addDays, setMinutes, setHours } from "date-fns";
 
 const marks = [
   {
@@ -38,24 +39,29 @@ const Backdrop = (props) => {
 };
 
 const ModalOverlay = (props) => {
-  const { events, setEvents } = useContext(EventsContext);
+  const { events, setEvents, weekStart, setWeekStart } =
+    useContext(EventsContext);
   const [value, setValue] = useState(0);
   const nameRef = useRef();
   const subjectRef = useRef();
   const handleLevel = (value) => {
     return marks[marks.findIndex((level) => level.value === value)].label;
   };
-
   const getRefContent = () => {
-    let start = 5;
-    let end = 5;
+    let hour = props.time.hour + 7;
+    let day = addDays(new Date(weekStart), props.time.day);
+    day = setHours(new Date(day), hour);
+    day = setMinutes(new Date(day), 0);
+    let y = day.getFullYear();
+    let m = day.getMonth();
+    let d = day.getDate();
     setEvents((prev) => [
       ...prev,
       {
         id: Math.random().toString(),
         title: nameRef.current.value,
-        start: start,
-        end: end,
+        start: new Date(y, m, d, hour, 0, 0),
+        end: new Date(y, m, d, hour + 1, 0, 0),
         subject: subjectRef.current.value,
         level: handleLevel(value),
       },
@@ -123,10 +129,7 @@ const FormModal = (props) => {
         document.getElementById("backdrop-root")
       )}
       {ReactDOM.createPortal(
-        <ModalOverlay
-          time={props.time}
-          onConfirm={props.onConfirm}
-        />,
+        <ModalOverlay time={props.time} onConfirm={props.onConfirm} />,
         document.getElementById("overlay-root")
       )}
     </Fragment>
