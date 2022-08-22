@@ -19,9 +19,6 @@ const Cell = (props) => {
   const formHandler = () => {
     setMyForm(null);
   };
-  const handleEventClick = () => {
-    setInfo(true);
-  };
   const infoHandler = () => {
     setInfo(null);
   };

@@ -2,8 +2,8 @@ export default [
   {
     id: 0,
     title: "All Day Event very long title",
-    start: new Date(2022, 7, 17, 12, 0, 0),
-    end: new Date(2022, 7, 17, 13, 0, 0),
+    start: new Date(2022, 7, 22, 12, 0, 0),
+    end: new Date(2022, 7, 22, 14, 0, 0),
     subject: "English",
     level: "Niveau 1",
   },

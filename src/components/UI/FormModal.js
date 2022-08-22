@@ -5,7 +5,7 @@ import Card from "./Card";
 import Button from "./Button";
 import { TextField, Box, Slider } from "@mui/material";
 import EventsContext from "../../store/event-context";
-import { addDays, setMinutes, setHours } from "date-fns";
+import { addDays } from "date-fns";
 
 const marks = [
   {
@@ -44,14 +44,19 @@ const ModalOverlay = (props) => {
   const [value, setValue] = useState(0);
   const nameRef = useRef();
   const subjectRef = useRef();
+  const startRef = useRef();
+  const endRef = useRef();
+  let starthour =
+    props.time.hour + 7 > 9 ? props.time.hour + 7 : `0${props.time.hour + 7}`;
+  let endHour =
+    props.time.hour + 8 > 9 ? props.time.hour + 8 : `0${props.time.hour + 8}`;
   const handleLevel = (value) => {
     return marks[marks.findIndex((level) => level.value === value)].label;
   };
   const getRefContent = () => {
-    let hour = props.time.hour + 7;
+    let start = startRef.current.value.split(":");
+    let end = endRef.current.value.split(":");
     let day = addDays(new Date(weekStart), props.time.day);
-    day = setHours(new Date(day), hour);
-    day = setMinutes(new Date(day), 0);
     let y = day.getFullYear();
     let m = day.getMonth();
     let d = day.getDate();
@@ -60,8 +65,8 @@ const ModalOverlay = (props) => {
       {
         id: Math.random().toString(),
         title: nameRef.current.value,
-        start: new Date(y, m, d, hour, 0, 0),
-        end: new Date(y, m, d, hour + 1, 0, 0),
+        start: new Date(y, m, d, start[0], start[1], 0),
+        end: new Date(y, m, d, end[0], end[1], 0),
         subject: subjectRef.current.value,
         level: handleLevel(value),
       },
@@ -94,6 +99,36 @@ const ModalOverlay = (props) => {
           required
           fullWidth
           placeholder="Entrer le nom du sujet"
+          margin="normal"
+        />
+        <TextField
+          inputRef={startRef}
+          id="startTime"
+          label="From"
+          type="time"
+          defaultValue={starthour + ":00"}
+          InputLabelProps={{
+            shrink: true,
+          }}
+          inputProps={{
+            step: 900, // 5 min
+          }}
+          sx={{ width: 200 }}
+          margin="normal"
+        />
+        <TextField
+          inputRef={endRef}
+          id="endTime"
+          label="To"
+          type="time"
+          defaultValue={endHour + ":00"}
+          InputLabelProps={{
+            shrink: true,
+          }}
+          inputProps={{
+            step: 900, // 5 min
+          }}
+          sx={{ width: 200, marginLeft: 15 }}
           margin="normal"
         />
         <Box sx={{ width: 530, margin: 5 }}>

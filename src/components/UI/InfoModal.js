@@ -3,7 +3,6 @@ import ReactDOM from "react-dom";
 import styles from "./InfoModal.module.css";
 import Card from "./Card";
 import Button from "./Button";
-import { TextField } from "@mui/material";
 
 const Backdrop = (props) => {
   return <div className={styles.backdrop} onClick={props.onConfirm} />;
@@ -20,6 +19,7 @@ const ModalOverlay = (props) => {
         <div className={styles.subject}>{props.event.subject}</div>
         <div className={styles.title}>{props.event.subject + " || " + props.event.level}</div>
         <hr/> 
+        <div className={styles.instructeur}>Instructeur: {props.event.title} Niveau : {props.event.level}</div>
       </div>
       <footer className={styles.actions}>
         <Button onClick={props.onConfirm}>FERMER</Button>
