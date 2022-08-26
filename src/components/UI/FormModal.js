@@ -39,8 +39,7 @@ const Backdrop = (props) => {
 };
 
 const ModalOverlay = (props) => {
-  const { events, setEvents, weekStart, setWeekStart } =
-    useContext(EventsContext);
+  const { setEvents, weekStart } = useContext(EventsContext);
   const [value, setValue] = useState(0);
   const nameRef = useRef();
   const subjectRef = useRef();
@@ -111,7 +110,7 @@ const ModalOverlay = (props) => {
             shrink: true,
           }}
           inputProps={{
-            step: 900, // 5 min
+            step: 900, // 15 min
           }}
           sx={{ width: 200 }}
           margin="normal"
@@ -126,7 +125,7 @@ const ModalOverlay = (props) => {
             shrink: true,
           }}
           inputProps={{
-            step: 900, // 5 min
+            step: 900, // 15 min
           }}
           sx={{ width: 200, marginLeft: 15 }}
           margin="normal"
@@ -156,6 +155,136 @@ const ModalOverlay = (props) => {
     </Card>
   );
 };
+
+const EditOverlay = (props) => {
+  const { events, setEvents, weekStart } = useContext(EventsContext);
+  const [value, setValue] = useState(0);
+  const nameRef = useRef();
+  const subjectRef = useRef();
+  const startRef = useRef();
+  const endRef = useRef();
+  let start = props.event.start.toLocaleTimeString('fr', {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+  let end = props.event.end.toLocaleTimeString('fr', {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+  const handleLevel = (value) => {
+    return marks[marks.findIndex((level) => level.value === value)].label;
+  };
+  const getRefContent = () => {
+    let start = startRef.current.value.split(":");
+    let end = endRef.current.value.split(":");
+    let day = addDays(new Date(weekStart), props.time.day);
+    let y = day.getFullYear();
+    let m = day.getMonth();
+    let d = day.getDate();
+    let newEvents = events.map((item) =>
+      item.id === props.event.id
+        ? {
+            id: props.event.id,
+            title: nameRef.current.value,
+            start: new Date(y, m, d, start[0], start[1], 0),
+            end: new Date(y, m, d, end[0], end[1], 0),
+            subject: subjectRef.current.value,
+            level: handleLevel(value),
+          }
+        : item
+    );
+    setEvents(newEvents);
+  };
+  const changeValue = (event, value) => {
+    setValue(value);
+  };
+  const defaultValue = (value) => {
+    return marks[marks.findIndex((level) => level.label === value)].value;
+  };
+
+  return (
+    <Card className={styles.modal}>
+      <header className={styles.header}>
+        <h2>Modifier séance</h2>
+      </header>
+      <div className={styles.content}>
+        <TextField
+          inputRef={nameRef}
+          margin="normal"
+          id="name"
+          variant="outlined"
+          required
+          fullWidth
+          autoFocus
+          placeholder="Entrez le nom de l'instructeur"
+          defaultValue={props.event.title}
+        />
+        <TextField
+          inputRef={subjectRef}
+          id="subject"
+          variant="outlined"
+          required
+          fullWidth
+          placeholder="Entrer le nom du sujet"
+          margin="normal"
+          defaultValue={props.event.subject}
+        />
+        <TextField
+          inputRef={startRef}
+          id="startTime"
+          label="From"
+          type="time"
+          defaultValue={start}
+          InputLabelProps={{
+            shrink: true,
+          }}
+          inputProps={{
+            step: 900, // 15 min
+          }}
+          sx={{ width: 200 }}
+          margin="normal"
+        />
+        <TextField
+          inputRef={endRef}
+          id="endTime"
+          label="To"
+          type="time"
+          defaultValue={end}
+          InputLabelProps={{
+            shrink: true,
+          }}
+          inputProps={{
+            step: 900, // 15 min
+          }}
+          sx={{ width: 200, marginLeft: 15 }}
+          margin="normal"
+        />
+        <Box sx={{ width: 530, margin: 5 }}>
+          <Slider
+            aria-label="Custom levels"
+            defaultValue={defaultValue(props.event.level)}
+            getAriaValueText={valuetext}
+            step={25}
+            marks={marks}
+            onChange={changeValue}
+          />
+        </Box>
+      </div>
+      <footer className={styles.actions}>
+        <Button onClick={props.onConfirm}>FERMER</Button>
+        <Button
+          onClick={() => {
+            getRefContent();
+            props.onConfirm();
+          }}
+        >
+          MODIFIER
+        </Button>
+      </footer>
+    </Card>
+  );
+};
+
 const FormModal = (props) => {
   return (
     <Fragment>
@@ -163,10 +292,20 @@ const FormModal = (props) => {
         <Backdrop onConfirm={props.onConfirm} />,
         document.getElementById("backdrop-root")
       )}
-      {ReactDOM.createPortal(
-        <ModalOverlay time={props.time} onConfirm={props.onConfirm} />,
-        document.getElementById("overlay-root")
-      )}
+      {!props.edit
+        ? ReactDOM.createPortal(
+            <ModalOverlay time={props.time} onConfirm={props.onConfirm} />,
+            document.getElementById("overlay-root")
+          )
+        : ReactDOM.createPortal(
+            <EditOverlay
+              time={props.time}
+              onConfirm={props.onConfirm}
+              event={props.event}
+              edit={props.edit}
+            />,
+            document.getElementById("overlay-root")
+          )}
     </Fragment>
   );
 };
