@@ -12,7 +12,8 @@ const Event = (props) => {
   return (
     <div
       className={classes.event}
-      style={{ height: `${handleHeight()}px`, top: handlePosition() }}
+      id={props.data.id}
+      style={{ height: `${handleHeight()}px`, top: handlePosition() , left: 0}}
       onClick={props.onConfirm}
     >
       <img className={classes.image} src={BigBen} />

@@ -9,7 +9,8 @@ const Cell = (props) => {
   const [myForm, setMyForm] = useState();
   const [info, setInfo] = useState();
   const [edit, setEdit] = useState();
-  let event = props.data[0];
+  const [myEvent, setMyEvent] = useState();
+  let events = props.data;
   const handleClick = () => {
     setMyForm(true);
   };
@@ -17,8 +18,9 @@ const Cell = (props) => {
     setMyForm(null);
     setEdit(null);
   };
-  const handleEventClick = (event) => {
+  const handleEventClick = (obj) => (event) => {
     event.stopPropagation();
+    setMyEvent(obj);
     setInfo(true);
   };
   const infoHandler = () => {
@@ -35,19 +37,25 @@ const Cell = (props) => {
         <FormModal
           onConfirm={formHandler}
           time={{ day: props.day, hour: props.hour }}
-          event={event}
+          event={myEvent}
           edit={edit}
         />
       )}
       {info && (
         <InfoModal
           onConfirm={infoHandler}
-          event={event}
+          event={myEvent}
           onEdit={handleEditClick}
         />
       )}
       <div className={classes.cell} onClick={handleClick}>
-        {event && <Event data={event} onConfirm={handleEventClick} />}
+        {events[0] &&
+          props.data.map((_, index) => (
+            <Event
+              data={events[index]}
+              onConfirm={handleEventClick(events[index])}
+            />
+          ))}
       </div>
     </Wrapper>
   );
